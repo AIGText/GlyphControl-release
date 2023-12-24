@@ -29,7 +29,7 @@
 
 <div align="center">
 
-<img src="readme_files/architecture.png" width="80%">
+<img src="readme_files/architecture-n.png" width="80%">
 
 </div>
 
