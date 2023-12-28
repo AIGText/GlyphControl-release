@@ -38,12 +38,15 @@
 * **SimpleBench**: A simple text prompt benchmark following the [Character-aware Paper](https://arxiv.org/abs/2212.10562). The format of prompts remains the same:  _`A sign that says "\<word>".'_
 * **CreativeBench**: A creative text prompt benchmark adapted from [GlyphDraw](https://arxiv.org/abs/2303.17870). We adopt diverse English-version prompts in the original benchmark and replace the words inside quotes. As an example, the prompt may look like: _`Little panda holding a sign that says "\<word>".'_ or _'A photographer wears a t-shirt with the word "\<word>." printed on it.'_
 
-(The prompts are listed in the ```text_prompts``` folder)
-
 Following [Character-aware Paper](https://arxiv.org/abs/2212.10562), we collect a pool of single-word candidates from Wikipedia. These words are
 then categorized into **four** buckets based on their frequencies: top 1K, 1k to 10k, 10k to 100k, and 100k plus. Each bucket contains words with frequencies in the respective range. To form input
 prompts, we randomly select **100** words from each bucket and insert them into the above
 templates. We generate **four** images for each word during the evaluation process.
+
+(The selected words are listed in the ```text_prompts/raw/SimpleBench``` folder while the candidate prompt templates of **CreativeBench** are shown in the ```text_prompts/raw/CreativeBench``` folder.
+
+The full prompts related to the evaluation results shown in the paper could be found in the ```text_prompts/paper``` folder.
+)
 
 ## :camera: Quantitative Results
 
