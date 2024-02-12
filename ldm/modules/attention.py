@@ -15,7 +15,7 @@ try:
     XFORMERS_IS_AVAILBLE = True
 except:
     XFORMERS_IS_AVAILBLE = False
-# XFORMERS_IS_AVAILBLE = False
+
 DETERMISTIC = False
 
 def exists(val):

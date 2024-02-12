@@ -89,7 +89,7 @@ class Render_Text:
     # only process a single group of rendered text (mainly for test on benchmark)
     def process(self, 
         rendered_txt, prompt, 
-        width, ratio, #height, 
+        width, ratio, 
         top_left_x, top_left_y, yaw, num_rows,
         a_prompt, n_prompt, num_samples, image_resolution, ddim_steps, guess_mode, strength, scale, seed, eta,
         ):
@@ -193,7 +193,8 @@ class Render_Text:
             shared_ddim_steps, shared_guess_mode, 
             shared_strength, shared_scale, shared_seed, 
             shared_eta, shared_a_prompt, shared_n_prompt,
-            only_show_rendered_image=False
+            only_show_rendered_image=False,
+            font_name="calibri"
             ):
         if shared_seed == -1:
             shared_seed = random.randint(0, 65535)
@@ -227,7 +228,8 @@ class Render_Text:
                     (shared_image_resolution, shared_image_resolution),
                     format_bboxes(width_values, ratio_values, top_left_x_values, top_left_y_values, yaw_values),
                     rendered_txt_values,
-                    num_rows_values
+                    num_rows_values,
+                    font_name=font_name
                     )
                 whiteboard_img = whiteboard_img.convert("RGB")
                 

@@ -1,4 +1,4 @@
-# GlyphControl: Glyph Conditional Control for Visual Text Generation
+# GlyphControl: Glyph Conditional Control for Visual Text Generation 
 
 <a href='https://arxiv.org/pdf/2305.18259'><img src='https://img.shields.io/badge/Arxiv-2305.18259-red'>
 <a href='https://github.com/AIGText/GlyphControl-release'><img src='https://img.shields.io/badge/Code-GlyphControl-yellow'>
@@ -14,6 +14,8 @@
 ## News
 
 ⛽ ⛽ ⛽ Contact: [yuhui.yuan@microsoft.com](yuhui.yuan@microsoft.com) 
+
+**2024.02.12** Release the training/evaluation codes.
 
 **2023.09.22** GlyphControl has been accepted by NeurIPS 2023 🍺
 
@@ -88,13 +90,12 @@ pip install -r requirements.txt
 
 Althoguh you could run our codes on CPU device,  we recommend you to use CUDA device for faster inference. The recommended CUDA version is **CUDA 11.3** and the minimum GPU memory consumption is 8~10G.
 
-
 ## :unlock: Available Checkpoints
 
-Download the checkpoints from our [hugging face space](https://huggingface.co/spaces/AIGText/GlyphControl/tree/main/checkpoints) and put the corresponding checkpoint files into the ```checkpoints``` folder. 
+Download the checkpoints from our [huggingface space](https://huggingface.co/spaces/AIGText/GlyphControl/tree/main/checkpoints) and put the corresponding checkpoint files into the ```checkpoints``` folder. 
 We provide **four** types of checkpoints. 
 
-Apart from the model trained on **LAION-Glyph-10M** for 6 epochs,  we also fine-tune the model for additional 40 epochs on **TextCaps-5K**, a subset of [TextCaps v0.1 Dataset](https://textvqa.org/textcaps/dataset/) consisting of 5K images related to signs, books, and posters.During the fine-tuning, we also train the U-Net decoder of the original SD branch according to the ablation study in our [report](https://arxiv.org/pdf/2305.18259).
+Apart from the model trained on **LAION-Glyph-10M** for 6 epochs,  we also fine-tune the model for additional 40 epochs on **TextCaps-5K**, a subset of [TextCaps v0.1 Dataset](https://textvqa.org/textcaps/dataset/) consisting of 5K images related to signs, books, and posters.During the fine-tuning, we also train the U-Net decoder of the original SD branch according to the ablation study in our [paper](https://arxiv.org/pdf/2305.18259).
 
 The relevant information is shown below. 
 
@@ -106,6 +107,27 @@ textcaps5K_epoch_20_model_ema_only.ckpt | TextCaps 5K  | 20 | $57/32$  | $66/38$
 textcaps5K_epoch_40_model_ema_only.ckpt | TextCaps 5K  | 40 | $\bf{71}/\bf{41}$ |  $\bf{77}/\bf{46}$ | $\bf{0.55}/\bf{1.67}$ | $\bf{34.2}/\bf{35.8}$ | 
 
 Although the models fine-tuned on TextCaps 5K demonstrate high OCR accuracy, the creativity and diversity of generted images may be lost. Feel free to try all the provided checkpoints for comparison. All the checkpoints are ema-only checkpoints while ```use_ema``` in the configs/config.yaml should be set as ```False```.
+
+## :triangular_flag_on_post:  Evaluation on Test Benchmarks.
+We evaluate on two types of benchmarks ```SimpleBench``` and ```CreativeBench```. There are 4 text files in ```text_prompts/raw/SimpleBench```, each of which stores 100 words selected from a frequency bucket. 
+
+For the ```SimpleBench```:
+
+evaluating on multiple checkpoints at different epoches (DeepSpeed Strategy used for training)
+```
+- python test_on_benchmark.py --cfg configs/config_ema.yaml --ckpt_folder <folder_with_multiple_checkpoint> --spell_prompt_type 20 --from-file <txt_file_store_bucket_words> --save_path <save_path> --do_ocr_eval  --epoch_eval_start 0 --epoch_interval 1 --epoch_eval --grams 1 --deepspeed_ckpt --a_prompt "" --n_prompt ""    
+```
+on a single checkpoint:
+```
+- python test_on_benchmark.py --cfg configs/config_ema.yaml --ckpt <checkpoint_path> --spell_prompt_type 20 --from-file <txt_file_store_bucket_words> --save_path <save_path> --do_ocr_eval --grams 1 --deepspeed_ckpt --a_prompt "" --n_prompt ""   
+```
+
+You should use ```config_ema.yaml``` for the checkpoints with EMA parts, while for the **ema-only checkpoints** (like 4 released checkpoints in the [huggingface space](https://huggingface.co/spaces/AIGText/GlyphControl/tree/main/checkpoints)) or the checkpoints trained without ema , the ```config.yaml``` is needed. 
+
+While for the ```CreativeBench```, you should add 
+```
+--prompt-from-file text_prompts/raw/CreativeBench/GlyphDraw_origin_remove_render_words.txt
+```
 
 ## :mag_right: Glyph Instructions
 
@@ -145,21 +167,54 @@ Or you can directly try our **demo** in our **hugging face** space [GlyphControl
 
 In the current version of our demo, we support four groups of ```Render Text``` at most.  Users should enter in the glyph instructions at corresponding parts. By selecting the checkpoint in the  ```Model Options``` part, users could try all four released checkpoints.
 
-## :tada: Acknowledgement
+## :unlock: Training Dataset 
 
-**Dataset**: 
-We sincerely thank the open-source large image-text dataset [LAION-2B-en](https://laion.ai/blog/laion-5b/) and corresponding aesthetic score prediction codes [LAION-Aesthetics_Predictor V2](https://github.com/christophschuhmann/improved-aesthetic-predictor). As for OCR detection, thanks for the open-source tool [PP-OCRv3](https://github.com/PaddlePaddle/PaddleOCR/blob/release/2.6/doc/doc_en/ppocr_introduction_en.md#pp-ocrv3).
+* **LAION-Glyph**: LAION-Glyph-1M or LAION-Glyph-10M 
 
-**Methodolgy and Demo**:
-Our method is based on the powerful controllable image generation method [ControlNet](https://github.com/lllyasviel/ControlNet). Thanks to their open-source codes. As for demo, we use the [ControlNet demo](https://huggingface.co/spaces/hysts/ControlNet) as reference.
+(Please check ```data/README.md``` for more details)
 
-**Comparison Methods in the paper**: 
-Thanks to the open-source diffusion codes or demos: [DALL-E 2](https://web.augloop-tools.officeppe.com/playground/), [Stable Diffusion 2.0](https://github.com/Stability-AI/StableDiffusion), [Stable Diffusion XL](https://dreamstudio.ai/generate), [DeepFloyd](https://github.com/deep-floyd/IF).
+* **TextCaps 5K**: seen in the appendix of the paper.
 
-## :question: Q&A
-Q: What is the approximate success rate?
+## :mag_right: Training 
+**Recommended**: using the GPUs with the memory of 32GB (at least >16GB)
 
-A: About 10-20%. Since the current version is an alpha version, the success rate is relatively low. 
+<!-- ```
+- export BLOB_MOUNT_PATH=$BLOB_MOUNT_PATH
+``` -->
+Download the pretrained model ```control_sd20_ini.ckpt``` from the [huggingface link](https://huggingface.co/spaces/AIGText/GlyphControl/blob/main/checkpoints/control_sd20_ini.ckpt) 
+and put it into the folder ```pretrained_models```, 
+and modify the ```batch_size``` in the training config to fit the GPU memory limit.
+
+* Train the model on LAION-Glyph. 
+
+First, prepare the ```data_info_file```, the tsv file recording the location of each sample (please check the template format in ```ldm/data/laion_glyph_control.py```.)
+
+Run the code:
+```
+- python main.py --folder <data_folder> --laion_data_info <data_info_file> -t --logdir <local_log_dir> --mixed_precision false --scale_lr false --gpus <gpus> -b configs/train_configs/laion_glyph_glyphcontrol_train.yaml
+```
+The default logger is testtube logger. If you hope to use wandb logger, please provide wandb api key through the keyword parameter:
+```
+--wandb_key <wandb_api_key>
+```
+And you could also specify the experiment name through: (recommended when training on a multi-node cluster) 
+```
+--prefix <prefix_of_experiment> 
+```
+
+the sample code looks like: 
+```
+- python main.py --folder data/LAION-Glyph-10M  -t --logdir logs/laion_glyphcontrol --mixed_precision false --scale_lr false --gpus 0,1,2,3,4,5,6,7 --laion_ocr_info data/LAION-Glyph-10M/data_infos_10M.tsv  --strategy_type DeepSpeedStrategy -b configs/train_configs/laion_glyph_glyphcontrol_train.yaml --wandb_key <wandb_api_key>
+```   
+
+* Train (fine-tune) the model on TextCaps 5K: 
+run the code:
+```
+- python main.py --folder <img_data_folder> --textcaps_caption <caption_data_file> --textcaps_hint_folder <glyph_img_folder> --textcaps_ocr_file <ocr_data_file> -t --logdir <logdir_in_blob> --mixed_precision false --scale_lr false --gpus <gpus>  -b configs/train_configs/textcaps_glyphcontrol_ablation.yaml --strategy_type DDPStrategy 
+```
+<!-- ```
+python main.py --folder $BLOB_MOUNT_PATH/data/textcaps/train_val_images/train_images --caption $BLOB_MOUNT_PATH/data/textcaps/TextCaps_0.1_train.json --hint_folder $BLOB_MOUNT_PATH/data/textcaps/Textcaps_fixed/rendered_images --ocr_file data/$BLOB_MOUNT_PATH/textcaps/TextVQA_Rosetta_OCR_v0.2_train_filtered.json -t --logdir logs/textcaps_control --mixed_precision false --scale_lr false --gpus 0,1,2,3,4,5,6,7  -b configs/train_configs/textcaps_cldm_v20_v2_ablation.yaml --strategy_type DDPStrategy --wandb_key <wandb_api_key>
+``` -->
 
 ## :e-mail: Contact
 

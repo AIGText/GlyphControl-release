@@ -1,5 +1,6 @@
 from PIL import Image, ImageFont, ImageDraw
 import random
+import numpy as np
 
 # resize height to image_height first, then shrink or pad to image_width
 def resize_and_pad_image(pil_image, image_size):
@@ -32,14 +33,15 @@ def resize_and_pad_image(pil_image, image_size):
 
     return pil_image
 
-def render_text_image_custom(image_size, bboxes, rendered_txt_values, num_rows_values, align = "center"):
+def render_text_image_custom(image_size, bboxes, rendered_txt_values, num_rows_values, font_name="calibri", align = "center"):
     # aligns = ["center", "left", "right"]
-    """Render text image based on the glyph instructions, i.e., the list of tuples (text, bbox, num_rows).
+    '''
+    Render text image based on the glyph instructions, i.e., the list of tuples (text, bbox, num_rows).
         Currently we just use Calibri font to render glyph images.
-    """
+    '''
     print(image_size, bboxes, rendered_txt_values, num_rows_values, align)
     background = Image.new("RGB", image_size, "white")
-    font = ImageFont.truetype("fonts/calibri.ttf", encoding='utf-8', size=512)
+    font = ImageFont.truetype(f"fonts/{font_name}.ttf", encoding='utf-8', size=512)
     
     for text, bbox, num_rows in zip(rendered_txt_values, bboxes, num_rows_values):
         
@@ -91,5 +93,40 @@ def render_text_image_custom(image_size, bboxes, rendered_txt_values, num_rows_v
         # draw = ImageDraw.Draw(image)
         
         background.paste(text_image, (top_left_x, top_left_y))
+    
+    return background
+
+def render_text_image_laionglyph(image_size, ocrinfo, confidence_threshold=0.5):
+    '''
+    Render the glyph image according to the ocr information for the samples in the LAIONGlyph Dataset 
+    '''
+    font = ImageFont.truetype("calibri.ttf", encoding='utf-8', size=512)
+    background = Image.new("RGB", image_size, "white")
+    
+    for sub_ocr_info in ocrinfo:
+        
+        bbox, text, confidence = sub_ocr_info
+        
+        if confidence < confidence_threshold:
+            continue
+        
+        # print(bbox, text, confidence)
+        # Calculate the real size
+        real_width = int(bbox[1][0] - bbox[0][0])
+        real_height = int(bbox[3][1] - bbox[0][1])
+        # Calculate the rotation parameter
+        bbox_center = [(bbox[0][0] + bbox[1][0]) // 2, (bbox[0][1] + bbox[1][1]) // 2]
+        angle = np.arctan2(bbox[1][1] - bbox_center[1], bbox[1][0] - bbox_center[0]) * 180 / np.pi
+        
+        text_image = Image.new("RGB", (512, 512), "white")
+        draw = ImageDraw.Draw(text_image)
+        x,y,w,h = draw.textbbox(xy=(0,0),text = text, font=font)   
+        text_image = Image.new("RGB", (w, h), "white")
+        draw = ImageDraw.Draw(text_image)
+        draw.text((-x/2,-y/2), text, "black", font=font, align="center")
+        
+        text_image = resize_and_pad_image(text_image, (real_width, real_height))
+        text_image = text_image.rotate(angle=-angle, expand=True, fillcolor="white")
+        background.paste(text_image, (int(bbox[0][0]), int(bbox[0][1])))
     
     return background

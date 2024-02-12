@@ -32,6 +32,9 @@ class LitEma(nn.Module):
         if self.num_updates >= 0:
             self.num_updates += 1
             decay = min(self.decay, (1 + self.num_updates) / (10 + self.num_updates))
+        
+        if decay == self.decay:
+            print("ema_num_updates: ", self.num_updates, "decay: ", decay)
 
         one_minus_decay = 1.0 - decay
 
