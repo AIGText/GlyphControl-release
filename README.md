@@ -227,7 +227,7 @@ If you find this code useful in your research, please consider citing:
 ```
 @article{yang2023glyphcontrol,
       title={GlyphControl: Glyph Conditional Control for Visual Text Generation}, 
-      author={Yukang Yang and Dongnan Gui and Yuhui Yuan and Haisong Ding and Han Hu and Kai Chen},
+      author={Yukang Yang and Dongnan Gui and Yuhui Yuan and Weicong Liang and Haisong Ding and Han Hu and Kai Chen},
       year={2023},
       eprint={2305.18259},
       archivePrefix={arXiv},
