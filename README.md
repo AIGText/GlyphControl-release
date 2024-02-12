@@ -197,14 +197,15 @@ The default logger is testtube logger. If you hope to use wandb logger, please p
 ```
 --wandb_key <wandb_api_key>
 ```
-And you could also specify the experiment name through: (recommended when training on a multi-node cluster) 
+And you could also specify the experiment name through: 
+<!-- (recommended when training on a multi-node cluster)  -->
 ```
 --prefix <prefix_of_experiment> 
 ```
 
 the sample code looks like: 
 ```
-- python main.py --folder data/LAION-Glyph-10M  -t --logdir logs/laion_glyphcontrol --mixed_precision false --scale_lr false --gpus 0,1,2,3,4,5,6,7 --laion_ocr_info data/LAION-Glyph-10M/data_infos_10M.tsv  --strategy_type DeepSpeedStrategy -b configs/train_configs/laion_glyph_glyphcontrol_train.yaml --wandb_key <wandb_api_key>
+- python main.py --folder data/LAION-Glyph-10M --laion_ocr_info data/LAION-Glyph-10M/data_infos_10M.tsv -t --logdir logs/laion_glyphcontrol --mixed_precision false --scale_lr false --gpus 0,1,2,3,4,5,6,7 --strategy_type DeepSpeedStrategy -b configs/train_configs/laion_glyph_glyphcontrol_train.yaml --wandb_key <wandb_api_key>
 ```   
 
 * Train (fine-tune) the model on TextCaps 5K: 
