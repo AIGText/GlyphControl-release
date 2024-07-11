@@ -1,0 +1,48 @@
+name: GlyphControl
+channels:
+  - pytorch
+  # - defaults
+  - conda-forge
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/pro
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2 
+  - nvidia/label/cuda-11.3.1
+  - xformers
+  # - xformers/label/dev
+dependencies: #TODO: reformat and recheck
+  - python=3.9 
+  - pip #=20.3
+  - cudatoolkit=11.3
+  - cuda-nvcc=11.3
+  - pytorch=1.12.1 
+  - torchvision=0.13.1
+  - torchaudio=0.12.1 
+  - numpy=1.23.1 
+  - xformers
+  - pip:
+    - albumentations==1.3.0 
+    - opencv-python==4.6.0.66 #
+    - deepspeed # TODO
+    - imageio==2.9.0
+    - imageio-ffmpeg==0.4.2
+    - pytorch-lightning==1.6.5 
+    - omegaconf==2.1.1
+    - test-tube>=0.7.5
+    - einops==0.3.0
+    - transformers==4.24.0 
+    - open_clip_torch==2.0.2
+    - torchmetrics==0.6.0
+    - timm
+    - gradio
+    - wandb 
+    - tqdm  
+    - easyocr
+    - triton==2.0.0.dev20221120
+    - Levenshtein
+    - py-cpuinfo
+    - hjson
+    - git+https://github.com/openai/CLIP.git
+    - -i https://pypi.tuna.tsinghua.edu.cn/simple
+    # - -e .

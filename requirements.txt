@@ -1,0 +1,30 @@
+pip #=20.3
+torch
+torchvision
+numpy==1.23.1 
+albumentations==1.3.0 
+opencv-python
+imageio==2.9.0
+imageio-ffmpeg==0.4.2
+pytorch-lightning==1.6.5 
+omegaconf==2.1.1
+test-tube>=0.7.5
+einops==0.3.0
+transformers==4.24.0 
+open_clip_torch==2.0.2
+torchmetrics==0.6.0
+timm
+gradio
+wandb 
+tqdm 
+easyocr
+triton==2.0.0.dev20221120
+Levenshtein
+xformers 
+# ==0.0.21.dev541 
+# new 
+py-cpuinfo
+hjson
+pydantic<2.0.0
+git+https://github.com/openai/CLIP.git
+# pip uninstall nvidia_cublas_cu11
